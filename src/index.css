@@ -56,12 +56,14 @@ body {
 
 /* Tall, invisible element that gives the page its scroll length.
    Height = (number of scroll screens) * 100vh. ScrollTrigger reads this.
-   Generous: ~11 screens — the CRT corridor needs dwell time per monitor so the
-   on-glass terminal feeds scroll at a readable pace. */
+   Everything downstream is scroll-FRACTION based, so this one number is the
+   global pacing knob: taller = slower, more cinematic travel. ~20 screens
+   gives each CRT a long, relaxed read and makes the wire dive feel like a
+   ride instead of a blink. */
 .scroll-spacer {
   position: relative;
   width: 100%;
-  height: 1150vh;
+  height: 2000vh;
   z-index: 1;
   pointer-events: none;
 }
@@ -87,10 +89,17 @@ body {
   animation: crt-flicker 7s steps(60) infinite;
 }
 .crt-fx::after {
-  /* the roll-bar: a soft brighter band forever drifting down the tube */
+  /* the roll-bar: a soft brighter band forever drifting down the tube.
+     IMPORTANT: animated via transform (compositor-only). The previous
+     background-position animation forced a full-screen repaint every frame —
+     ~8MP of raster work per frame on a 4K display, the single biggest source
+     of jank on otherwise-fast machines. */
   content: '';
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 60vh;
   background: linear-gradient(
     to bottom,
     transparent 0%,
@@ -99,16 +108,16 @@ body {
     rgba(0, 255, 204, 0.025) 54%,
     transparent 100%
   );
-  background-size: 100% 60vh;
-  background-repeat: no-repeat;
+  transform: translateY(-60vh);
+  will-change: transform;
   animation: crt-roll 9s linear infinite;
 }
 @keyframes crt-roll {
   0% {
-    background-position: 0 -60vh;
+    transform: translateY(-60vh);
   }
   100% {
-    background-position: 0 130vh;
+    transform: translateY(130vh);
   }
 }
 @keyframes crt-flicker {

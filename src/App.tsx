@@ -17,8 +17,10 @@ export default function App() {
       {/* Pinned full-screen WebGL canvas. R3F auto-resizes it to its parent. */}
       <div className="canvas-root">
         <Canvas
-          dpr={[1, 2]} // clamp pixel ratio: crisp on retina, not wasteful on 4K
-          gl={{ antialias: true, powerPreference: 'high-performance', alpha: false, stencil: false }}
+          dpr={[1, 1.5]} // cap pixel ratio: the post chain is per-pixel — 1.5 is visually identical under grain/scanlines but ~45% fewer pixels than 2
+          // antialias OFF: EffectComposer renders to its own multisampled buffers,
+          // so canvas MSAA would be paid for and then thrown away on every frame.
+          gl={{ antialias: false, powerPreference: 'high-performance', alpha: false, stencil: false }}
           camera={{ fov: 55, near: 0.1, far: 400, position: initial }}
         >
           <Suspense fallback={null}>

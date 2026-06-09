@@ -90,7 +90,7 @@ There are **four** transforms between "user scrolled N pixels" and "camera is he
 
 ### 1. Scroll position → progress `p ∈ [0, 1]`
 
-A tall invisible `.scroll-spacer` (`height: 1150vh`) gives the page its scroll length.
+A tall invisible `.scroll-spacer` (`height: 2000vh`) gives the page its scroll length.
 ScrollTrigger linearly normalizes the scroll position into a single scalar:
 
 ```
@@ -201,6 +201,14 @@ window, which is what makes the feed readable.
 ## Performance notes
 
 - Scroll mutates numbers only — **zero React re-renders** during scroll.
+- The full-page CRT roll-bar animates via `transform` (compositor-only). Never
+  switch it back to `background-position` — that repaints the whole viewport
+  every frame (~8MP of raster work at 4K) and janks even fast machines.
+- Canvas `antialias` is OFF on purpose: EffectComposer renders into its own
+  multisampled buffers, so canvas MSAA would be paid and discarded each frame.
+  `dpr` is capped at 1.5 — visually identical under the grain/scanlines.
+- Benchmark with `npm run build && npm run preview`, not the dev server — dev
+  runs StrictMode double-mounts and unminified three.js validation paths.
 - All `useFrame` callbacks share R3F's single `requestAnimationFrame` loop; splitting
   logic across components does not create extra loops.
 - The skills core uses an `InstancedMesh` (one draw call for 64 nodes).
