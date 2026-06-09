@@ -12,6 +12,14 @@ by the page itself** (so copy of any length fits — nothing clips). The camera 
 in front of each monitor while its feed plays, then hops to the next; data pulses run
 through the link cables, risers, and trunk bus the whole time.
 
+Getting there is half the show: the skills core's trunk cable is **ridable**. The
+scene-2 → scene-3 transition flies the camera into a glowing cable mouth, down the
+inside of the wire (energy rings + packet tracers rushing past, speed coupled to your
+scrolling), and **bursts out through CRT-01's glass** under a white warp flash —
+landing in the dwell pose, backing away from the now-glowing screen. The same
+`TUNNEL_CURVE` (scene.ts) drives the camera keyframes, the visible cable jacket, the
+tunnel wall, and the packet traffic (`WireTunnel.tsx`), so they can never drift apart.
+
 **Stack:** React 19 · TypeScript · Vite 6 · `@react-three/fiber` 9 · `@react-three/drei` 10 · `@react-three/postprocessing` 3 · GSAP 3 (ScrollTrigger).
 
 ## Quick start

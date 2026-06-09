@@ -139,7 +139,10 @@ export default function Cables() {
     }
 
     // ── HANGS: thin suspension wires up into the void ──
-    for (let i = 0; i < n; i++) {
+    // Monitor 0 gets none: the trunk cable from the skills core (WireTunnel)
+    // plugs into its back and "carries" it — and the fat pipe would clip
+    // these thin wires where it threads past them.
+    for (let i = 1; i < n; i++) {
       const p = galleryPosition(i);
       for (const side of [-1.1, 1.1]) {
         const a = new THREE.Vector3(p[0] + side, p[1] + BEZEL_H / 2 - 0.1, -0.1);

@@ -120,6 +120,17 @@ body {
   98% { opacity: 1; }
 }
 
+/* ── warp flash (wire-dive exit through the CRT glass) ────────────────── */
+.warp-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0; /* GSAP drives this from the scroll timeline */
+  background: radial-gradient(circle at 50% 50%, #eafffa 0%, #b9ffec 55%, #6df7d8 100%);
+  will-change: opacity;
+}
+
 /* ── HTML overlay layer ───────────────────────────────────────────────── */
 .overlay-layer {
   position: fixed;

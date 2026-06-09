@@ -3,6 +3,7 @@ import Effects from './Effects';
 import ParticleField from './scenes/ParticleField';
 import SkillsCore from './scenes/SkillsCore';
 import Gallery from './scenes/gallery/Gallery';
+import WireTunnel from './scenes/gallery/WireTunnel';
 import { PARTICLES_ANCHOR, SKILLS_ANCHOR } from '../config/scene';
 
 /**
@@ -24,6 +25,8 @@ export default function Experience() {
       <ParticleField position={PARTICLES_ANCHOR} />
       <SkillsCore position={SKILLS_ANCHOR} />
       <Gallery />
+      {/* the trunk cable from the core to CRT-01 — and the ride inside it */}
+      <WireTunnel />
 
       <CameraRig />
       <Effects />

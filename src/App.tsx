@@ -36,6 +36,10 @@ export default function App() {
       {/* Full-page CRT treatment: scanlines, vignette, slow roll-bar. CSS only. */}
       <div className="crt-fx" aria-hidden />
 
+      {/* White-out covering the burst through CRT-01's glass (wire dive exit).
+          Opacity driven by the scroll timeline in ScrollController. */}
+      <div className="warp-flash" aria-hidden />
+
       {/* Drives ScrollTrigger → the shared `rig` → camera/overlays. Renders nothing. */}
       <ScrollController />
 

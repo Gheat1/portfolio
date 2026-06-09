@@ -7,6 +7,7 @@ import {
   OVERLAY_TIMINGS,
   OVERLAY_RAMP,
   SKILLS_EXPLODE,
+  WARP_FLASH,
 } from '../config/scene';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -98,6 +99,15 @@ export default function ScrollController() {
           },
           prev.at, // absolute start time === start scroll fraction
         );
+      }
+
+      // (2a) WARP FLASH — white-out that covers the burst through CRT-01's
+      //      glass at the end of the wire dive (and the 180° camera whip).
+      const flash = document.querySelector<HTMLElement>('.warp-flash');
+      if (flash) {
+        gsap.set(flash, { opacity: 0 });
+        tl.to(flash, { opacity: 1, duration: WARP_FLASH.inEnd - WARP_FLASH.inStart, ease: 'power2.in' }, WARP_FLASH.inStart);
+        tl.to(flash, { opacity: 0, duration: WARP_FLASH.outEnd - WARP_FLASH.outStart, ease: 'power2.out' }, WARP_FLASH.outStart);
       }
 
       // (2) SKILLS CORE — scatter from 0 → 1 across its scroll window.

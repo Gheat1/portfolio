@@ -84,6 +84,73 @@ export function makeCrtScreenMaterial(seed: number): THREE.ShaderMaterial {
 }
 
 /**
+ * The inside wall of the trunk cable the camera rides from the skills core to
+ * CRT-01. Rendered on a BackSide tube around TUNNEL_CURVE:
+ *
+ *   • energy rings sweeping past, driven by time AND `uRush` (the camera's
+ *     progress through the pipe) — so scrolling faster visibly accelerates
+ *     the data rushing by
+ *   • dashed packet lanes streaming along the pipe at fixed angles
+ *   • a hot glow at the far end: the light at the end of the tunnel is the
+ *     back of CRT-01's glass
+ *
+ * `uFade` feathers the whole wall in/out around the dive window so the tube
+ * never pops while it's on screen.
+ */
+export function makeTunnelInteriorMaterial(): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    transparent: true,
+    uniforms: {
+      uTime: { value: 0 },
+      uRush: { value: 0 },
+      uFade: { value: 0 },
+    },
+    vertexShader: /* glsl */ `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      uniform float uTime;
+      uniform float uRush;
+      uniform float uFade;
+      varying vec2 vUv;
+
+      void main() {
+        vec3 col = vec3(0.004, 0.012, 0.016);
+
+        // energy rings sweeping down the pipe (kept slim so the packet lanes
+        // and tracers read as the "data", not the hoops)
+        float ringPhase = vUv.x * 24.0 - uTime * 1.1 - uRush * 46.0;
+        float s = fract(ringPhase);
+        float ring = smoothstep(0.09, 0.0, min(s, 1.0 - s));
+        col += vec3(0.04, 0.34, 0.29) * ring;
+
+        // dashed packet lanes at fixed angles around the wall
+        float laneId = floor(vUv.y * 16.0);
+        float lane = fract(vUv.y * 16.0);
+        float lineMask = smoothstep(0.10, 0.02, min(lane, 1.0 - lane));
+        float dash = step(
+          0.45,
+          fract(vUv.x * 36.0 - uTime * (2.0 + fract(laneId * 0.371) * 3.0) - uRush * 80.0 + laneId * 0.73)
+        );
+        vec3 laneCol = mix(vec3(0.1, 1.0, 0.8), vec3(0.25, 0.7, 1.0), fract(laneId * 0.618));
+        col += laneCol * lineMask * dash * 0.55;
+
+        // light at the end of the tunnel — CRT-01's glass from behind
+        float endGlow = smoothstep(0.9, 1.0, vUv.x);
+        col += vec3(0.5, 1.0, 0.9) * endGlow * endGlow * 1.7;
+
+        gl_FragColor = vec4(col, uFade);
+      }
+    `,
+  });
+}
+
+/**
  * Wire jacket + data pulses. The tube geometry's uv.x runs 0→1 along the cable,
  * so a couple of gaussian-ish bands marching along uv.x read as packets flying
  * through the wire. `uSpeed` may be negative to send traffic the other way.
