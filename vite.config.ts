@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/portfolio/',
   plugins: [react()],
   server: {
     host: true, // expose on LAN — handy for testing on the bare-metal nodes
