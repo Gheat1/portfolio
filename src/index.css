@@ -176,6 +176,51 @@ body {
   max-width: min(46ch, 80vw);
 }
 
+.summary__name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(1.05rem, 2vw, 1.5rem);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0 0 0.4rem;
+  text-shadow: 0 0 18px rgba(0, 255, 204, 0.45);
+}
+
+/* ── resume download button (the no-frills escape hatch) ──────────────── */
+.resume-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-top: 1.3rem;
+  padding: 0.6rem 1.05rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--accent);
+  border: 1px solid rgba(0, 255, 204, 0.4);
+  border-radius: 2px;
+  background: rgba(0, 255, 204, 0.06);
+  box-shadow: 0 0 18px rgba(0, 255, 204, 0.12);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.resume-btn:hover {
+  background: rgba(0, 255, 204, 0.15);
+  box-shadow: 0 0 28px rgba(0, 255, 204, 0.35);
+  transform: translateY(-2px);
+}
+.resume-btn__icon {
+  font-size: 0.9rem;
+}
+.resume-btn__note {
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  color: var(--fg-dim);
+}
+
 /* Skills — right rail; ONE category shown at a time (sequential reveal).
    Vertically centred via margin:auto so GSAP's `y` slide stays conflict-free. */
 .panel--skill {
@@ -470,6 +515,23 @@ body {
 .hud__pct {
   color: var(--accent);
 }
+/* persistent resume chip in the top bar — clickable from the first frame */
+.hud__resume {
+  pointer-events: auto;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid rgba(0, 255, 204, 0.4);
+  border-radius: 2px;
+  padding: 0.3rem 0.65rem;
+  background: rgba(2, 10, 8, 0.55);
+  letter-spacing: 0.16em;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.hud__resume:hover {
+  background: rgba(0, 255, 204, 0.14);
+  box-shadow: 0 0 16px rgba(0, 255, 204, 0.3);
+}
+
 .hud__status::before {
   content: '●';
   color: var(--accent);
@@ -585,31 +647,97 @@ body {
   z-index: 5;
 }
 
-/* scroll hint that fades after the user starts scrolling */
-.scroll-hint {
+/* ── journey tracker — persistent "you are here" map + scroll prompt ──── */
+.journey {
   position: fixed;
   left: 50%;
-  bottom: 58px; /* clear of the HUD telemetry row */
+  bottom: 52px; /* clear of the HUD telemetry row */
   transform: translateX(-50%);
   z-index: 3;
-  font-size: 0.66rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--fg-dim);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
   pointer-events: none;
 }
-.scroll-hint span {
+.journey__track {
+  display: flex;
+  align-items: flex-start;
+}
+.journey__stop {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 76px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--mono);
+}
+.journey__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--fg-dim);
+  background: transparent;
+  transition: all 0.3s ease;
+}
+.journey__label {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  transition: color 0.3s ease;
+}
+.journey__link {
+  position: absolute;
+  top: 4px;
+  left: calc(50% + 7px);
+  width: calc(100% - 14px);
+  height: 1px;
+  background: rgba(95, 124, 120, 0.45);
+}
+.journey__stop.is-done .journey__dot {
+  background: rgba(0, 255, 204, 0.55);
+  border-color: rgba(0, 255, 204, 0.55);
+}
+.journey__stop.is-done .journey__link {
+  background: rgba(0, 255, 204, 0.45);
+}
+.journey__stop.is-active .journey__dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+.journey__stop.is-active .journey__label {
+  color: var(--accent);
+}
+.journey__hint {
   display: inline-block;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fg);
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.35);
   animation: bob 1.8s ease-in-out infinite;
+}
+.journey__hint.is-end {
+  animation: none;
+  color: var(--fg-dim);
+  text-shadow: none;
 }
 @keyframes bob {
   0%,
   100% {
     transform: translateY(0);
-    opacity: 0.4;
+    opacity: 0.55;
   }
   50% {
-    transform: translateY(5px);
+    transform: translateY(4px);
     opacity: 1;
   }
 }
@@ -658,12 +786,13 @@ body {
 
 /* ── responsive ───────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  /* project title block becomes a compact bottom sheet under the CRT */
+  /* project title block becomes a compact bottom sheet under the CRT
+     (raised clear of the journey tracker at the bottom edge) */
   .panel--project {
     left: 16px;
     right: 16px;
     top: auto;
-    bottom: 7vh;
+    bottom: 14vh;
     margin-block: 0;
     width: auto;
     padding: 0.9rem 1rem;
@@ -689,11 +818,17 @@ body {
   .rail__label {
     display: none;
   }
+  .journey__stop {
+    width: 58px;
+  }
+  .resume-btn__note {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hud__status::before,
-  .scroll-hint span,
+  .journey__hint,
   .boot__cursor,
   .project__hint-dot,
   .crt-fx,

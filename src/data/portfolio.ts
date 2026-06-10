@@ -44,6 +44,18 @@ export interface Portfolio {
   projects: Project[];
 }
 
+/**
+ * Who this site belongs to. Used by the hero panel, the contact finale, and
+ * the persistent resume button. Keep in sync with scripts/make-resume.py
+ * (rerun `python scripts/make-resume.py` after changing either).
+ */
+export const IDENTITY = {
+  name: 'Gheat',
+  tagline: 'systems engineer · quantitative developer',
+  email: 'gheatmc@gmail.com',
+  site: 'gheat.net',
+};
+
 export const PORTFOLIO: Portfolio = {
   summary:
     'highly technical software engineer, systems administrator, and quantitative developer with deep experience in full-stack development, ai infrastructure, cryptography, and high-performance bare-metal networking. proven track record architecting enterprise-grade pipelines, processing multi-dimensional vector databases, and automating bare-metal infrastructure deployments. specialized in cyber security, advanced mathematical modeling, and containerized cloud/edge environments.',

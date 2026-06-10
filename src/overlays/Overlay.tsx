@@ -1,5 +1,8 @@
-import { PORTFOLIO, SKILL_GROUPS } from '../data/portfolio';
+import { IDENTITY, PORTFOLIO, SKILL_GROUPS } from '../data/portfolio';
 import { GALLERY_ITEMS } from '../config/sections';
+
+/** Base-path-safe URL of the downloadable plain-PDF resume in /public. */
+export const RESUME_URL = `${import.meta.env.BASE_URL}resume.pdf`;
 
 /**
  * The HTML overlay layer. Every panel carries a `data-overlay="<id>"` attribute;
@@ -20,12 +23,18 @@ export default function Overlay() {
       {/* ── 01 · SUMMARY ─────────────────────────────────────────────── */}
       <section className="overlay-panel panel--summary" data-overlay="summary">
         <p className="kicker">01 / system summary</p>
+        <p className="summary__name">{IDENTITY.name}</p>
         <h1 className="headline">
           <span className="glitch" data-text="SYSTEMS">SYSTEMS</span>
           <br />
           <span className="glitch" data-text="ENGINEER">ENGINEER</span>
         </h1>
         <p className="body">{PORTFOLIO.summary}</p>
+        {/* escape hatch for people who'd rather skip the ride */}
+        <a className="resume-btn" href={RESUME_URL} download>
+          <span className="resume-btn__icon">⬇</span> download resume.pdf
+          <span className="resume-btn__note">the no-frills version</span>
+        </a>
       </section>
 
       {/* ── 02 · SKILLS — one category at a time (sequential reveal) ───── */}
@@ -76,10 +85,10 @@ export default function Overlay() {
         </h2>
         <p className="contact__line">open to internships · contracts · interesting problems</p>
         <div className="contact__links">
-          <a href="mailto:skyegamer367@gmail.com">skyegamer367@gmail.com</a>
+          <a href={`mailto:${IDENTITY.email}`}>{IDENTITY.email}</a>
           <span className="contact__sep">//</span>
-          <a href="https://gheat.net" target="_blank" rel="noreferrer">
-            gheat.net
+          <a href={RESUME_URL} download>
+            ⬇ resume.pdf
           </a>
         </div>
         <p className="contact__replay">▲ scroll up to replay the feed</p>
