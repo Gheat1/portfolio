@@ -41,8 +41,8 @@ const VIEW_H = BODY_TOP - BODY_BOT;
 const Z_GLASS = BEZEL_D / 2 + 0.002;
 const Z_TEXT = BEZEL_D / 2 + 0.16; // clears the 0.12 glass bulge
 
-const FONT_REGULAR = '/fonts/JetBrainsMono-Regular.ttf';
-const FONT_BOLD = '/fonts/JetBrainsMono-Bold.ttf';
+const FONT_REGULAR = `${import.meta.env.BASE_URL}fonts/JetBrainsMono-Regular.ttf`;
+const FONT_BOLD = `${import.meta.env.BASE_URL}fonts/JetBrainsMono-Bold.ttf`;
 
 /** drei <Text> wraps troika-three-text; these are the live props we drive per frame. */
 interface TroikaText extends THREE.Mesh {
